@@ -21,7 +21,7 @@ Suma:
 	add $t2, $s0, $s1
 	add $t2, $t2, $t1
 	sw $t2, 12($t0)
-	li $s2, 4
+	addi $s2, $s2, 4
 MulCuatro: 
 	rem $t3, $t2, $s2
 	subi $t2, $t2, 1

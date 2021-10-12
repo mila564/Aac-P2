@@ -1,7 +1,7 @@
 class InstructionMemory:
     def __init__(self):
         self.instructions = []
-        with open('D:\\ESCRITORIO\\Aac\\P2\\programaReducido.txt') as f:
+        with open('/instrucciones.txt') as f:
             for linea in f:
                 self.instructions.append(f.read())
     def printInstructionMemoryState(self):
