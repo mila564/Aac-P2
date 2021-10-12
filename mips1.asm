@@ -8,7 +8,7 @@
 	la $t0, a
 	lw $s0, 0($t0)
 	lw $s1, 4($t0)
-	move $t6, $s1
+	lw $t6, 4($t0)
 	addi $t1, $zero, 1
 Potencia: 
 	beq $t6, $zero, FinBucle
