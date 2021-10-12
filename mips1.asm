@@ -27,8 +27,7 @@ MulCuatro:
     beq $t3, $zero, Fin
     subi $t2, $t2, 1
     j MulCuatro
-Fin: addi $t2, $t2, 1
-    sw $t6, 12($t0)
+Fin: sw $t6, 12($t0)
     sw $t2, 16($t0)
 	li $v0, 10
 	syscall
