@@ -25,7 +25,7 @@ Suma:
 MulCuatro: 
 	rem $t3, $t2, $s2
 	subi $t2, $t2, 1
-	bnez $t3, MulCuatro
+	bne $t3, $zero, MulCuatro
 	addi $t2, $t2, 1
 	sw $t2, 16($t0)
 	li $v0, 10
