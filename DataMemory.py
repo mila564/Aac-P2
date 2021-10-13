@@ -7,7 +7,3 @@ class DataMemory:
         print("Data Memory: ")
         for i in range(32):
             print("Posición " + str(i) + ": " + str(self.data[i]))
-'''
-dataMem = DataMemory()
-dataMem.printDataMemoryState()
-'''

@@ -8,7 +8,3 @@ class InstructionMemory:
         print("Instruction Memory: ")
         for i in self.instructions:
             print(i)
-'''
-i = InstructionMemory()
-i.printInstructionMemoryState()
-'''

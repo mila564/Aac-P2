@@ -3,3 +3,5 @@ class ProgramCounter:
         self.address = 0
     def incrementPc(self):
         self.addres += 1
+    def __str__(self):
+        return self.address
