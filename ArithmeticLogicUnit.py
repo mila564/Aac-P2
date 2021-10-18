@@ -103,6 +103,6 @@ class ArithmeticLogicUnit:
                     rt.set_value(self.subi(instruction_ex.get_rs(),
                                            instruction_ex.get_offset()))
         else:
-            return None  # a jump instruction doesn't go through this phase
+            return None  # a J instruction doesn't go through this phase
         ex_mem.set_instruction(instruction_ex)
         return ex_mem

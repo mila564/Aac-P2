@@ -1,5 +1,3 @@
-
-
 def main():
     string = "j Potencia"
     array = string.split(" ")
