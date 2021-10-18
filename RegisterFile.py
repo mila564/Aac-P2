@@ -5,6 +5,7 @@ from instructions.InstructionJ import InstructionJ
 from instructions.InstructionR import InstructionR
 from pipeline_registers.IdExPipelineRegister import IdExPipelineRegister
 from pipeline_registers.IfIdPipelineRegister import IfIdPipelineRegister
+from pipeline_registers.MemWbPipelineRegister import MemWbPipelineRegister
 
 
 class RegisterFile:
@@ -18,8 +19,8 @@ class RegisterFile:
         self.registerFile = []
         self.positions = {}
         for i in range(32):
-            self.registerFile.append(Register(register_names[i]), 0)
-            self.position[register_names[i]] = i
+            self.registerFile.append(Register(register_names[i], 0))
+            self.positions[register_names[i]] = i
 
     def print_register_file_state(self):
         print("Register File: ")
@@ -70,5 +71,23 @@ class RegisterFile:
             else:
                 raise ValueError
             return IdExPipelineRegister(instruction_decode)
+        except TypeError:
+            print("Invalid type")
+
+    def write_back(self, mem_wb):
+        try:
+            mem_wb = MemWbPipelineRegister(mem_wb)
+            instruction = mem_wb.get_instruction()
+            operation_code = instruction.get_op_code()
+            if operation_code == "lw":
+                instruction = InstructionI(instruction)
+                rt = instruction.get_rt()
+                self.positions[rt.get_name()] = rt.get_value()
+            elif operation_code in ["add", "sub", "mul", "rem"]:
+                instruction = InstructionR(instruction)
+                rd = instruction.get_rd()
+                self.positions[rd.get_name()] = rd.get_value()
+            else:   # sw, beq or j instruction
+                return None
         except TypeError:
             print("Invalid type")

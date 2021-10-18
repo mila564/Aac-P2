@@ -11,37 +11,27 @@ from pipeline_registers.IdExPipelineRegister import IdExPipelineRegister
 class ArithmeticLogicUnit:
     @staticmethod
     def reg_op(rs, rt, op):
-        try:
-            op1 = Register(rs)
-            op2 = Register(rt)
-            op3 = str(op)
-        except TypeError:
-            print("Invalid type")
+        op1 = Register(rs)
+        op2 = Register(rt)
+        op3 = str(op)
         if op3 == "+":
             return op1.get_value() + op2.get_value()
         elif op3 == "==":
             return op1.get_value() == op2.get_value()
         elif op3 == "-":
             return op1.get_value() - op2.get_value()
-        elif op3 == "%":
-            return op1.get_value() % op2.get_value()
         else:
-            raise ValueError("The operator must be another one")
+            return op1.get_value() % op2.get_value()
 
     @staticmethod
     def immediate_op(rs, offset, op):
-        try:
-            op1 = Register(rs)
-            op2 = int(offset)
-            op3 = str(op)
-        except TypeError:
-            print("Invalid type")
+        op1 = Register(rs)
+        op2 = int(offset)
+        op3 = str(op)
         if op3 == "+":
             return op1.get_value() + op2
-        elif op3 == "-":
-            return op1.get_value() - op2
         else:
-            raise ValueError("The operator must be another one")
+            return op1.get_value() - op2
 
     def add(self, rs, rt):
         self.reg_op(rs, rt, "+")

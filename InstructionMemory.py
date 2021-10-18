@@ -88,4 +88,4 @@ class InstructionMemory:
         elif type(operation_code) == str:
             self.create_instruction_for_if_id_register(instruction_array_fetch[1:], pc_address)
         else:
-            raise ValueError
+            return None
