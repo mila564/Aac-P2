@@ -87,7 +87,7 @@ class RegisterFile:
                 instruction = InstructionR(instruction)
                 rd = instruction.get_rd()
                 self.positions[rd.get_name()] = rd.get_value()
-            else:   # sw, beq or j instruction
+            else:   # sw, beq or j instruction don't go through this phase
                 return None
-        except TypeError:
-            print("Invalid type")
+        except RuntimeError:  # we got None at the entry
+            return None

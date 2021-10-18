@@ -55,44 +55,47 @@ class ArithmeticLogicUnit:
         self.immediate_op(rs, offset, "+")
 
     def execution(self, id_ex, pc):
-        id_ex = IdExPipelineRegister(id_ex)
-        ex_mem = ExMemPipelineRegister()
-        instruction_decode = id_ex.get_instruction()
-        operation_code = instruction_decode.get_op_code()
-        if operation_code in ["add", "sub", "mul", "rem"]:
-            instruction_decode = InstructionR(instruction_decode)
-            instruction_ex = copy.deepcopy(instruction_decode)
-            rd = instruction_ex.get_rd()
-            if operation_code == "add":
-                rd.set_value(self.add(instruction_ex.get_rs(), instruction_ex.get_rt()))
-            elif operation_code == "sub":
-                rd.set_value(self.sub(instruction_ex.get_rs(), instruction_ex.get_rt()))
-            elif operation_code == "mul":
-                rd.set_value(self.mul(instruction_ex.get_rs(), instruction_ex.get_rt()))
+        try:
+            id_ex = IdExPipelineRegister(id_ex)
+            ex_mem = ExMemPipelineRegister()
+            instruction_decode = id_ex.get_instruction()
+            operation_code = instruction_decode.get_op_code()
+            if operation_code in ["add", "sub", "mul", "rem"]:
+                instruction_decode = InstructionR(instruction_decode)
+                instruction_ex = copy.deepcopy(instruction_decode)
+                rd = instruction_ex.get_rd()
+                if operation_code == "add":
+                    rd.set_value(self.add(instruction_ex.get_rs(), instruction_ex.get_rt()))
+                elif operation_code == "sub":
+                    rd.set_value(self.sub(instruction_ex.get_rs(), instruction_ex.get_rt()))
+                elif operation_code == "mul":
+                    rd.set_value(self.mul(instruction_ex.get_rs(), instruction_ex.get_rt()))
+                else:
+                    rd.set_value(self.rem(instruction_ex.get_rs(), instruction_ex.get_rt()))
+            elif operation_code in ["beq", "addi", "subi", "lw", "sw"]:
+                instruction_decode = InstructionI(instruction_decode)
+                instruction_ex = copy.deepcopy(instruction_decode)
+                if operation_code == "beq":
+                    try:
+                        pc = ProgramCounter(pc)
+                    except TypeError:
+                        print("Invalid type")
+                    if self.beq(instruction_ex.get_rt(), instruction_ex.get_rs()):
+                        pc.set_address(instruction_ex.get_offset())
+                elif operation_code == "lw" or operation_code == "sw":
+                    ex_mem.set_value(self.mem_op(instruction_ex.get_rs(),
+                                                 instruction_ex.get_offset()))
+                else:
+                    rt = instruction_ex.get_rt()
+                    if operation_code == "addi":
+                        rt.set_value(self.addi(instruction_ex.get_rs(),
+                                               instruction_ex.get_offset()))
+                    else:  # subi
+                        rt.set_value(self.subi(instruction_ex.get_rs(),
+                                               instruction_ex.get_offset()))
             else:
-                rd.set_value(self.rem(instruction_ex.get_rs(), instruction_ex.get_rt()))
-        elif operation_code in ["beq", "addi", "subi", "lw", "sw"]:
-            instruction_decode = InstructionI(instruction_decode)
-            instruction_ex = copy.deepcopy(instruction_decode)
-            if operation_code == "beq":
-                try:
-                    pc = ProgramCounter(pc)
-                except TypeError:
-                    print("Invalid type")
-                if self.beq(instruction_ex.get_rt(), instruction_ex.get_rs()):
-                    pc.set_address(instruction_ex.get_offset())
-            elif operation_code == "lw" or operation_code == "sw":
-                ex_mem.set_value(self.mem_op(instruction_ex.get_rs(),
-                                             instruction_ex.get_offset()))
-            else:
-                rt = instruction_ex.get_rt()
-                if operation_code == "addi":
-                    rt.set_value(self.addi(instruction_ex.get_rs(),
-                                           instruction_ex.get_offset()))
-                else:  # subi
-                    rt.set_value(self.subi(instruction_ex.get_rs(),
-                                           instruction_ex.get_offset()))
-        else:
-            return None  # a J instruction doesn't go through this phase
-        ex_mem.set_instruction(instruction_ex)
-        return ex_mem
+                return None  # a J instruction doesn't go through this phase
+            ex_mem.set_instruction(instruction_ex)
+            return ex_mem
+        except RuntimeError:  # we got None at the entry
+            return None
