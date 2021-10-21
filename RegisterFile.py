@@ -30,7 +30,7 @@ class RegisterFile:
         for i in range(32):
             print(self.register_file[i].name + "|" + str(self.register_file[i].value))
 
-    def instruction_decode(self, if_id, ex_mem, mem_wb, effective_jump, insert_bubble):
+    def instruction_decode(self, if_id, ex_mem, mem_wb, effective_jump):
         if if_id is None:
             return None
         elif effective_jump:
@@ -65,27 +65,29 @@ class RegisterFile:
             # Forwarding handling
             if isinstance(instruction_decode, InstructionI) or isinstance(instruction_decode, InstructionR):
                 # Execution forwarding
-                if isinstance(ex_mem.instruction, InstructionR):
-                    if ex_mem.instruction.rd__eq__(instruction_decode.rs):
-                        instruction_decode.rs.value = ex_mem.instruction.rd.value
-                    elif ex_mem.instruction.rd__eq__(instruction_decode.rt):
-                        instruction_decode.rt.value = ex_mem.instruction.rd.value
-                elif ex_mem.instruction.op_code in ["addi", "subi"]:  # Revise condition
-                    if ex_mem.instruction.rt__eq__(instruction_decode.rs):
-                        instruction_decode.rs.value = ex_mem.instruction.rd.value
-                    elif ex_mem.instruction.rt__eq__(instruction_decode.rt):
-                        instruction_decode.rt.value = ex_mem.instruction.rd.value
-                # Insert bubble
-                if ex_mem.instruction.op_code == "lw":
-                    insert_bubble = True
-                    return None  # Because of the bubble, future phases of this instruction have to be erased
+                if ex_mem is not None:
+                    if isinstance(ex_mem.instruction, InstructionR):
+                        if ex_mem.instruction.rd.__eq__(instruction_decode.rs):
+                            instruction_decode.rs.value = ex_mem.instruction.rd.value
+                        elif ex_mem.instruction.rd.__eq__(instruction_decode.rt):
+                            instruction_decode.rt.value = ex_mem.instruction.rd.value
+                    elif ex_mem.instruction.op_code in ["addi", "subi"]:  # Revise condition
+                        if ex_mem.instruction.rt.__eq__(instruction_decode.rs):
+                            instruction_decode.rs.value = ex_mem.instruction.rd.value
+                        elif ex_mem.instruction.rt.__eq__(instruction_decode.rt):
+                            instruction_decode.rt.value = ex_mem.instruction.rd.value
+                    # Insert bubble
+                    if ex_mem.instruction.op_code == "lw" and ex_mem.instruction.rt.__eq__(instruction_decode.rs) \
+                            or ex_mem.instruction.rt.__eq__(instruction_decode.rt):
+                        return None, True  # Second parameter is boolean insert_bubble which
+                        # indicates future phases of this instruction have to be erased
                 # Memory forwarding
-                if mem_wb.instruction.op_code == "lw":
-                    if mem_wb.instruction.rt__eq__(instruction_decode.rs):
+                if mem_wb is not None and mem_wb.instruction.op_code == "lw":
+                    if mem_wb.instruction.rt.__eq__(instruction_decode.rs):
                         instruction_decode.rs.value = mem_wb.instruction.rt.value
-                    elif mem_wb.instruction.rt__eq__(instruction_decode.rt):
+                    elif mem_wb.instruction.rt.__eq__(instruction_decode.rt):
                         instruction_decode.rt.value = mem_wb.instruction.rt.value
-            return IdExPipelineRegister(instruction_decode)
+            return IdExPipelineRegister(instruction_decode), False  # If we got here, then insert_bubble is false
 
     def write_back(self, mem_wb):
         if mem_wb is None:

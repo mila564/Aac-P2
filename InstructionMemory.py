@@ -43,7 +43,7 @@ class InstructionMemory:
                 self.labels[label] = i
 
     def instruction_fetch(self, pc, insert_bubble, if_id):
-        if insert_bubble:  # If there's a bubble, then this instruction must repeat instruction decode phase
+        if insert_bubble:  # If there's a bubble, then this instruction must repeat decode phase
             return if_id
         instruction_array_fetch = str(self.instructions[pc.address]).split()  # addi $t1, $zero, 1 => ['addi',
         # '$t1,', '$zero,', '1']

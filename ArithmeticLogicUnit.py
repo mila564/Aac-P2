@@ -44,7 +44,7 @@ class ArithmeticLogicUnit:
     def mem_op(self, rs, offset):
         return self.immediate_op(rs, offset, "+", 4)
 
-    def execution(self, id_ex, pc, effective_jump):
+    def execution(self, id_ex, pc):
         if id_ex is None:
             return None
         else:
@@ -52,6 +52,7 @@ class ArithmeticLogicUnit:
             operation_code = instruction_decode.op_code
             instruction_ex = copy.deepcopy(instruction_decode)
             value = None
+            effective_jump = False
             if operation_code in ["add", "sub", "mul", "rem"]:
                 if operation_code == "add":
                     instruction_ex.rd.value = self.add(instruction_ex.rs, instruction_ex.rt)
@@ -76,4 +77,4 @@ class ArithmeticLogicUnit:
             elif operation_code == "j":
                 pc.address = instruction_ex.target  # We change pc to fetch the instruction addressed by target
                 effective_jump = True
-            return ExMemPipelineRegister(instruction_ex, value)
+            return ExMemPipelineRegister(instruction_ex, value), effective_jump
