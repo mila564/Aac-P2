@@ -42,7 +42,9 @@ class InstructionMemory:
                 label = re.sub(":", "", label)  # We remove last :
                 self.labels[label] = i
 
-    def instruction_fetch(self, pc):
+    def instruction_fetch(self, pc, insert_bubble, if_id):
+        if insert_bubble:  # If there's a bubble, then this instruction must repeat instruction decode phase
+            return if_id
         instruction_array_fetch = str(self.instructions[pc.address]).split()  # addi $t1, $zero, 1 => ['addi',
         # '$t1,', '$zero,', '1']
         instruction_fetch = self.create_instruction_for_if_id_register(instruction_array_fetch, pc.address)
@@ -68,13 +70,15 @@ class InstructionMemory:
             else:  # addi o subi
                 rs_name_register = re.sub(",", "", instruction_array_fetch[2])  # We remove extra commas in rs
                 offset = int(instruction_array_fetch[3])  # We get immediate
-            return InstructionI(operation_code, Register(rt_name_register, 0), offset, Register(rs_name_register, 0))  # Instance of I instruction
+            return InstructionI(operation_code, Register(rt_name_register, 0), offset,
+                                Register(rs_name_register, 0))  # Instance of I instruction
             # add $t2, $t2, $t1 => ['add', '$t2,', '$t2,', '$t1']
         elif operation_code in ["add", "sub", "rem", "mul"]:  # Type R
             rd_name_register = re.sub(",", "", instruction_array_fetch[1])  # We remove extra commas in rd
             rs_name_register = re.sub(",", "", instruction_array_fetch[2])  # We remove extra commas in rs
             rt_name_register = instruction_array_fetch[3]  # We remove extra commas in rt
-            return InstructionR(operation_code, Register(rd_name_register, 0), Register(rs_name_register, 0), Register(rt_name_register, 0))  # Instance of R instruction
+            return InstructionR(operation_code, Register(rd_name_register, 0), Register(rs_name_register, 0),
+                                Register(rt_name_register, 0))  # Instance of R instruction
         # j Potencia => ['j', 'Potencia']
         elif operation_code == "j":  # Type J
             target = self.labels[instruction_array_fetch[1]]  # We get memory address

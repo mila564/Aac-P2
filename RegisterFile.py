@@ -62,6 +62,7 @@ class RegisterFile:
                 instruction_decode = InstructionR(instruction_fetch.op_code, rd, rt, rs)
             elif isinstance(instruction_fetch, InstructionJ):
                 instruction_decode = InstructionJ(instruction_fetch.op_code, instruction_fetch.target)
+            # Forwarding handling
             if isinstance(instruction_decode, InstructionI) or isinstance(instruction_decode, InstructionR):
                 # Execution forwarding
                 if isinstance(ex_mem.instruction, InstructionR):
@@ -69,7 +70,7 @@ class RegisterFile:
                         instruction_decode.rs.value = ex_mem.instruction.rd.value
                     elif ex_mem.instruction.rd__eq__(instruction_decode.rt):
                         instruction_decode.rt.value = ex_mem.instruction.rd.value
-                elif ex_mem.instruction.op_code in ["addi", "subi"]: # Revise condition
+                elif ex_mem.instruction.op_code in ["addi", "subi"]:  # Revise condition
                     if ex_mem.instruction.rt__eq__(instruction_decode.rs):
                         instruction_decode.rs.value = ex_mem.instruction.rd.value
                     elif ex_mem.instruction.rt__eq__(instruction_decode.rt):
@@ -77,6 +78,7 @@ class RegisterFile:
                 # Insert bubble
                 if ex_mem.instruction.op_code == "lw":
                     insert_bubble = True
+                    return None  # Because of the bubble, future phases of this instruction have to be erased
                 # Memory forwarding
                 if mem_wb.instruction.op_code == "lw":
                     if mem_wb.instruction.rt__eq__(instruction_decode.rs):

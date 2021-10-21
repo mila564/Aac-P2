@@ -25,10 +25,9 @@ def main():
         mem_wb = dm.memory(ex_mem)
         ex_mem = aux
         id_ex = rf.instruction_decode(if_id, ex_mem.instruction, mem_wb, effective_jump, insert_bubble)
-        # ex_mem and mem_wb parameter to check forwarding
-        if_id = im.instruction_fetch(pc)  # Revise bubble thing in jumps and lw instruction in ex
+        if_id = im.instruction_fetch(pc, insert_bubble, if_id)
         pc.increment_pc()
-        effective_jump = False
+        effective_jump, insert_bubble = False
 
 
 if __name__ == '__main__':
