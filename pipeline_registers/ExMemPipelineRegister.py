@@ -2,18 +2,14 @@ from pipeline_registers.PipelineRegister import PipelineRegister
 
 
 class ExMemPipelineRegister(PipelineRegister):
-    def __init__(self, instruction, value):
+    def __init__(self, instruction, val):
         super().__init__(instruction)
-        try:
-            self.value = int(value)
-        except TypeError:
-            print("Invalid type")
+        self.__val = val
 
-    def get_value(self):
-        return self.value
+    @property
+    def val(self):
+        return self.__val
 
-    def set_value(self, value):
-        try:
-            self.value = int(value)
-        except TypeError:
-            print("Invalid type")
+    @val.setter
+    def val(self, v):
+        self.__val = v

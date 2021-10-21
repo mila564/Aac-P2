@@ -1,7 +1,9 @@
+from DataMemory import DataMemory
+
+
 def main():
-    var = str(None)
-    print(var)
-    return 0
+    dm = DataMemory()
+    print(dm.data_memory_size())
 
 
 if __name__ == '__main__':

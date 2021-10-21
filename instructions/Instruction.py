@@ -1,9 +1,7 @@
 class Instruction:
     def __init__(self, op_code):
-        try:
-            self.opCode = str(op_code)
-        except TypeError:
-            print("The operation code is not a string")
+        self.__op_code = op_code
 
-    def get_op_code(self):
-        return self.opCode
+    @property
+    def op_code(self):
+        return self.__op_code

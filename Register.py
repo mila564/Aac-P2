@@ -1,21 +1,22 @@
 class Register:
     def __init__(self, name, value):
-        self.name = name
-        self.value = value
+        self.__name = name
+        self.__value = value
 
-    def get_name(self):
-        return self.name
+    @property
+    def name(self):
+        return self.__name
 
-    def get_value(self):
-        return self.name
+    @property
+    def value(self):
+        return self.__value
 
-    def set_value(self, value):
-        try:
-            self.value = int(value)
-        except TypeError:
-            print("Invalid type")
+    @value.setter
+    def value(self, val):
+        self.__value = val
 
     def __eq__(self, other):
         if isinstance(other, Register):
-            return self.name == other.name
-        return False
+            return self.__name == other.__name
+        else:
+            return False

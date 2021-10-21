@@ -1,18 +1,17 @@
 class ProgramCounter:
     def __init__(self):
-        self.address = 0
+        self.__address = 0
 
-    def get_address(self):
-        return self.address
+    @property
+    def address(self):
+        return self.__address
 
-    def set_address(self, address):
-        try:
-            self.address = int(address)
-        except TypeError:
-            print("Invalid type")
+    @address.setter
+    def address(self, a):
+        self.__address = a
 
     def increment_pc(self):
-        self.address += 1
+        self.__address += 1
 
     def __str__(self):
-        return "PC = " + str(self.address)
+        return "PC = " + str(self.__address)

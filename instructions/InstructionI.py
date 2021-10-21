@@ -1,40 +1,33 @@
-from RegisterFile import Register
 from instructions.Instruction import Instruction
 
 
 class InstructionI(Instruction):
-    def __init__(self, cop, rt, offset, rs):
-        super().__init__(cop)
-        try:
-            self.rt = Register(rt)
-            self.offset = int(offset)
-            self.rs = Register(rs)
-        except TypeError:
-            print("The type of some operand is not correct")
+    def __init__(self, op_code, rt, offset, rs):
+        super().__init__(op_code)
+        self.__rt = rt
+        self.__offset = offset
+        self.__rs = rs
 
-    def get_rt(self):
-        return self.rt
+    @property
+    def rt(self):
+        return self.__rt
 
-    def get_offset(self):
-        return self.offset
+    @property
+    def offset(self):
+        return self.__offset
 
-    def get_rs(self):
-        return self.rs
+    @property
+    def rs(self):
+        return self.__rs
 
-    def set_rt(self, rt):
-        try:
-            self.rs = Register(rt)
-        except TypeError:
-            print("Invalid type")
+    @rt.setter
+    def rt(self, reg_rt):
+        self.__rt = reg_rt
 
-    def set_offset(self, offset):
-        try:
-            self.offset = int(offset)
-        except TypeError:
-            print("Invalid type")
+    @offset.setter
+    def offset(self, o):
+        self.__offset = o
 
-    def set_rs(self, rs):
-        try:
-            self.rs = Register(rs)
-        except TypeError:
-            print("Invalid type")
+    @rs.setter
+    def rs(self, reg_rs):
+        self.__rs = reg_rs

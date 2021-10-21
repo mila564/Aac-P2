@@ -2,18 +2,14 @@ from instructions.Instruction import Instruction
 
 
 class InstructionJ(Instruction):
-    def __init__(self, cop, target):
-        super().__init__(cop)
-        try:
-            self.target = int(target)
-        except TypeError:
-            print("The type of the operand is not correct")
+    def __init__(self, op_code, target):
+        super().__init__(op_code)
+        self.__target = target
 
-    def get_target(self):
-        return self.target
+    @property
+    def target(self):
+        return self.__target
 
-    def set_target(self, target):
-        try:
-            self.target = int(target)
-        except TypeError:
-            print("Invalid type")
+    @target.setter
+    def target(self, t):
+        self.__target = t

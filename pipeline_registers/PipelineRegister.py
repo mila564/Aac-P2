@@ -1,18 +1,13 @@
-from instructions.Instruction import Instruction
 
 
 class PipelineRegister:
     def __init__(self, instruction):
-        try:
-            self.instruction = Instruction(instruction)
-        except TypeError:
-            print("Invalid type")
+        self.__instruction = instruction
 
-    def get_instruction(self):
-        return self.instruction
+    @property
+    def instruction(self):
+        return self.__instruction
 
-    def set_instruction(self, instruction):
-        try:
-            self.instruction = Instruction(instruction)
-        except TypeError:
-            print("Invalid type")
+    @instruction.setter
+    def instruction(self, i):
+        self.__instruction = i

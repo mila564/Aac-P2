@@ -1,7 +1,5 @@
 import copy
 
-from instructions.InstructionI import InstructionI
-from pipeline_registers.ExMemPipelineRegister import ExMemPipelineRegister
 from pipeline_registers.MemWbPipelineRegister import MemWbPipelineRegister
 
 
@@ -10,29 +8,28 @@ class DataMemory:
         self.data = []
         for i in range(58):
             self.data.append(0)
+        self.data[4] = 3  # We suppose a = 3
+        self.data[5] = 2  # b = 2
+
+    def data_memory_size(self):
+        return len(self.data)
 
     def print_data_memory_state(self):
         print("Data Memory: ")
-        for i in range(58):
+        for i in range(58):  # 58 integer positions => 232 positions of 1 byte in mips memory
             print("Index " + str(i) + ": " + str(self.data[i]))
 
     def memory(self, ex_mem):
-        try:
-            ex_mem = ExMemPipelineRegister(ex_mem)
-            mem_wb = MemWbPipelineRegister()
-            instruction = ex_mem.get_instruction()
-            operation_code = instruction.get_op_code()
+        if ex_mem is None:
+            return None
+        else:
+            instruction_ex = ex_mem.instruction
+            operation_code = instruction_ex.op_code
+            instruction_mem_wb = copy.deepcopy(instruction_ex)
             if operation_code == "lw" or operation_code == "sw":
-                instruction = InstructionI(instruction)
-                instruction_mem_wb = copy.deepcopy(instruction)
-                rt = instruction_mem_wb.get_rt()
                 if operation_code == "lw":
-                    rt.set_value(self.data[ex_mem.get_value()])
+                    instruction_mem_wb.rt.value = self.data[ex_mem.val % self.data_memory_size()]
                 else:  # sw
-                    self.data[ex_mem.get_value()] = rt.get_value()
-                mem_wb.set_instruction(instruction_mem_wb)
-                return mem_wb
-            else:
-                return None  # a J/R instruction doesn't go through this phase
-        except TypeError:
-            print("Invalid type")
+                    self.data[ex_mem.val % self.data_memory_size()] = instruction_mem_wb.rt.value
+                    # module because of lw/sw result (if it's bigger that memory's capacity)
+            return MemWbPipelineRegister(instruction_mem_wb)

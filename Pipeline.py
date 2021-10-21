@@ -18,11 +18,11 @@ def main():
     dm.print_data_memory_state()
     mem_wb = ex_mem = id_ex = if_id = None
     # loop
-    while pc.get_address() < im.get_last_instruction_address():
+    while pc.address < im.get_last_instruction_address():
         rf.write_back(mem_wb)
-        ex_mem = alu.execution(id_ex, pc)  # aux = execution(id_ex, pc)
+        aux = alu.execution(id_ex, pc)
         mem_wb = dm.memory(ex_mem)
-        # ex_mem = aux
+        ex_mem = aux
         id_ex = rf.instruction_decode(if_id)
         if_id = im.instruction_fetch(pc)
         pc.increment_pc()
