@@ -44,7 +44,7 @@ class ArithmeticLogicUnit:
     def mem_op(self, rs, offset):
         return self.immediate_op(rs, offset, "+", 4)
 
-    def execution(self, id_ex, pc):
+    def execution(self, id_ex, pc, effective_jump):
         if id_ex is None:
             return None
         else:
@@ -65,6 +65,7 @@ class ArithmeticLogicUnit:
                 if operation_code == "beq":
                     if self.beq(instruction_ex.rt, instruction_ex.rs):
                         pc.address = instruction_ex.offset
+                        effective_jump = True
                 elif operation_code == "lw" or operation_code == "sw":
                     value = self.mem_op(instruction_ex.rs, instruction_ex.offset)
                 else:
@@ -72,6 +73,7 @@ class ArithmeticLogicUnit:
                         instruction_ex.rt.value = self.addi(instruction_ex.rs, instruction_ex.offset)
                     else:  # subi
                         instruction_ex.rt.value = self.subi(instruction_ex.rs, instruction_ex.offset)
-            else:
-                return None  # J instruction doesn't go through this phase
+            elif operation_code == "j":
+                pc.address = instruction_ex.target  # We change pc to fetch the instruction addressed by target
+                effective_jump = True
             return ExMemPipelineRegister(instruction_ex, value)
