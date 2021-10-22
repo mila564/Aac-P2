@@ -12,6 +12,8 @@ class ArithmeticLogicUnit:
             return rs.value == rt.value
         elif op == "-":
             return rs.value - rt.value
+        elif op == "*":
+            return rs.value * rt.value
         else:
             return rs.value % rt.value
 
@@ -34,6 +36,9 @@ class ArithmeticLogicUnit:
 
     def subi(self, rs, offset):
         return self.immediate_op(rs, offset, "-", 1)
+
+    def mul(self, rs, rt):
+        return self.reg_op(rs, rt, "*")
 
     def rem(self, rs, rt):
         return self.reg_op(rs, rt, "%")

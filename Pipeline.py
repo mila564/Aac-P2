@@ -35,7 +35,8 @@ def main():
             id_ex = tuple_id_ex[0]
             insert_bubble = tuple_id_ex[1]
         if_id = im.instruction_fetch(pc, insert_bubble, if_id)
-        pc.increment_pc()
+        if not insert_bubble:
+            pc.increment_pc()
         effective_jump = insert_bubble = False
 
 
