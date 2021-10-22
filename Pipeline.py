@@ -5,23 +5,25 @@ from DataMemory import DataMemory
 from RegisterFile import RegisterFile
 
 
+def print_state_components(pc, rf, dm):
+    print(pc)
+    rf.print_register_file_state()
+    dm.print_data_memory_state()
+
+
 def main():
     # datapath initialization
     pc = ProgramCounter()
-    print(pc)
     im = InstructionMemory()
-    im.print_instruction_memory_state()
     rf = RegisterFile()
-    rf.print_register_file_state()
     alu = ArithmeticLogicUnit()
     dm = DataMemory()
-    dm.print_data_memory_state()
     mem_wb = ex_mem = id_ex = if_id = None
     effective_jump = insert_bubble = finished_pipeline = False
     # loop
     while not finished_pipeline:
         rf.write_back(mem_wb)
-        tuple_aux = alu.execution(id_ex, pc)  # tuple_aux = aux, effective_jump
+        tuple_aux = alu.execution(id_ex, pc)  # tuple_aux = ex_mem, effective_jump
         mem_wb = dm.memory(ex_mem)
         if tuple_aux is not None:
             ex_mem = tuple_aux[0]
@@ -38,6 +40,7 @@ def main():
         if_id = im.instruction_fetch(pc, insert_bubble, if_id)
         if not insert_bubble and pc.address <= im.get_last_instruction_address():
             pc.increment_pc()
+        print_state_components(pc, rf, dm)
         finished_pipeline = if_id == id_ex == ex_mem == mem_wb is None
         effective_jump = insert_bubble = False
 

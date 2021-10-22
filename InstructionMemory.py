@@ -14,15 +14,18 @@ class InstructionMemory:
     def __init__(self):
         self.instructions = []
         self.labels = {}
-        with open(os.getcwd() + '/instructions.txt') as f:
+        with open(os.getcwd() + "/instructions.txt") as f:
             for linea in f:
+                linea = linea.replace("\n", "")
                 self.instructions.append(linea)
         self.place_labels()
 
     def print_instruction_memory_state(self):
+        print("---------------------")
         print("Instruction Memory: ")
         for i in self.instructions:
             print(i)
+        print("---------------------")
 
     def print_labels_dic(self):
         print("Labels: ")

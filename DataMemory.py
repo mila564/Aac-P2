@@ -15,9 +15,11 @@ class DataMemory:
         return len(self.data)
 
     def print_data_memory_state(self):
+        print("---------------------")
         print("Data Memory: ")
         for i in range(58):  # 58 integer positions => 232 positions of 1 byte in mips memory
             print("Index " + str(i) + ": " + str(self.data[i]))
+        print("---------------------")
 
     def memory(self, ex_mem):
         if ex_mem is None:

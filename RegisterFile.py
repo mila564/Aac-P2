@@ -25,10 +25,12 @@ class RegisterFile:
         self.register_file[index_reg].value = 4  # $t0 = 4
 
     def print_register_file_state(self):
+        print("---------------------")
         print("Register File: ")
         print("Name|Value")
         for i in range(32):
             print(self.register_file[i].name + "|" + str(self.register_file[i].value))
+        print("---------------------")
 
     def instruction_decode(self, if_id, ex_mem, mem_wb, effective_jump):
         if if_id is None:
@@ -59,7 +61,7 @@ class RegisterFile:
                               self.register_file[index_rt].value)
                 rs = Register(self.register_file[index_rs].name,
                               self.register_file[index_rs].value)
-                instruction_decode = InstructionR(instruction_fetch.op_code, rd, rt, rs)
+                instruction_decode = InstructionR(instruction_fetch.op_code, rd, rs, rt)
             elif isinstance(instruction_fetch, InstructionJ):
                 instruction_decode = InstructionJ(instruction_fetch.op_code, instruction_fetch.target)
             # Forwarding handling
@@ -73,9 +75,9 @@ class RegisterFile:
                             instruction_decode.rt.value = ex_mem.instruction.rd.value
                     elif ex_mem.instruction.op_code in ["addi", "subi"]:  # Revise condition
                         if ex_mem.instruction.rt.__eq__(instruction_decode.rs):
-                            instruction_decode.rs.value = ex_mem.instruction.rd.value
+                            instruction_decode.rs.value = ex_mem.instruction.rt.value
                         elif ex_mem.instruction.rt.__eq__(instruction_decode.rt):
-                            instruction_decode.rt.value = ex_mem.instruction.rd.value
+                            instruction_decode.rt.value = ex_mem.instruction.rt.value
                     # Insert bubble
                     if ex_mem.instruction.op_code == "lw" and (ex_mem.instruction.rt.__eq__(instruction_decode.rs)
                                                                or ex_mem.instruction.rt.__eq__(instruction_decode.rt)):

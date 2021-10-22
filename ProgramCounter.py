@@ -14,4 +14,4 @@ class ProgramCounter:
         self.__address += 1
 
     def __str__(self):
-        return "PC = " + str(self.__address)
+        return "---------------------\nPC = " + str(self.__address) + "\n---------------------\n"
