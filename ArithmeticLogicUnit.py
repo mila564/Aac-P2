@@ -7,23 +7,22 @@ class ArithmeticLogicUnit:
     @staticmethod
     def reg_op(rs, rt, op):
         if op == "+":
-            return rs.value + rt.value
+            return int(rs.value + rt.value)
         elif op == "==":
-            return rs.value == rt.value
+            return int(rs.value == rt.value)
         elif op == "-":
-            return rs.value - rt.value
+            return int(rs.value - rt.value)
         elif op == "*":
-            return rs.value * rt.value
+            return int(rs.value * rt.value)
         else:
-            return rs.value % rt.value
+            return int(rs.value % rt.value)
 
     @staticmethod
     def immediate_op(rs, offset, op, divider):  # Add divider parameter because of lw/sw instructions
         if op == "+":
-            res = rs.value + int(offset / divider)
-            return res
+            return int(rs.value + offset / divider)
         else:
-            return rs.value - offset / divider
+            return int(rs.value - offset / divider)
 
     def add(self, rs, rt):
         return self.reg_op(rs, rt, "+")
@@ -73,7 +72,7 @@ class ArithmeticLogicUnit:
                         pc.address = instruction_ex.offset
                         effective_jump = True
                 elif operation_code == "lw" or operation_code == "sw":
-                    value = self.mem_op(instruction_ex.rs, instruction_ex.offset)
+                    value = int(self.mem_op(instruction_ex.rs, instruction_ex.offset))
                 else:
                     if operation_code == "addi":
                         instruction_ex.rt.value = self.addi(instruction_ex.rs, instruction_ex.offset)

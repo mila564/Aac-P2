@@ -77,8 +77,8 @@ class RegisterFile:
                         elif ex_mem.instruction.rt.__eq__(instruction_decode.rt):
                             instruction_decode.rt.value = ex_mem.instruction.rd.value
                     # Insert bubble
-                    if ex_mem.instruction.op_code == "lw" and ex_mem.instruction.rt.__eq__(instruction_decode.rs) \
-                            or ex_mem.instruction.rt.__eq__(instruction_decode.rt):
+                    if ex_mem.instruction.op_code == "lw" and (ex_mem.instruction.rt.__eq__(instruction_decode.rs)
+                                                               or ex_mem.instruction.rt.__eq__(instruction_decode.rt)):
                         return None, True  # Second parameter is boolean insert_bubble which
                         # indicates future phases of this instruction have to be erased
                 # Memory forwarding
