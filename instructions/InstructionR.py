@@ -1,7 +1,9 @@
+from abc import ABC
+
 from instructions.Instruction import Instruction
 
 
-class InstructionR(Instruction):
+class InstructionR(Instruction, ABC):
     def __init__(self, op_code, rd, rs, rt):
         super().__init__(op_code)
         self.__rd = rd
@@ -31,3 +33,6 @@ class InstructionR(Instruction):
     @rt.setter
     def rt(self, reg_rt):
         self.__rt = reg_rt
+
+    def __str__(self):
+        return str(self.op_code) + " " + str(self.__rd.name) + ", " + str(self.__rs.name) + ", " + str(self.__rt.name)

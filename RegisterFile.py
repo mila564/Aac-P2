@@ -24,13 +24,11 @@ class RegisterFile:
         index_reg = self.positions["$t0"]  # index_reg = 8
         self.register_file[index_reg].value = 4  # $t0 = 4
 
-    def print_register_file_state(self):
-        print("---------------------")
-        print("Register File: ")
-        print("Name|Value")
+    def __str__(self):
+        s = "Register file [Name: value] => "
         for i in range(32):
-            print(self.register_file[i].name + "|" + str(self.register_file[i].value))
-        print("---------------------")
+            s += "[" + str(self.register_file[i]) + "]"
+        return s
 
     def instruction_decode(self, if_id, ex_mem, mem_wb, effective_jump):
         if if_id is None:

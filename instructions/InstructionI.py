@@ -1,7 +1,9 @@
+from abc import ABC
+
 from instructions.Instruction import Instruction
 
 
-class InstructionI(Instruction):
+class InstructionI(Instruction, ABC):
     def __init__(self, op_code, rt, offset, rs):
         super().__init__(op_code)
         self.__rt = rt
@@ -31,3 +33,10 @@ class InstructionI(Instruction):
     @rs.setter
     def rs(self, reg_rs):
         self.__rs = reg_rs
+
+    def __str__(self):
+        if self.op_code in ["lw", "sw"]:
+            return str(self.op_code) + " " + str(self.__rt.name) + ", " + str(self.__offset) + "(" + str(self.__rs.name) + ")"
+        else:
+            return str(self.op_code) + " " + str(self.__rt.name) + ", " + str(self.__rs.name) + ", " + str(self.__offset)
+

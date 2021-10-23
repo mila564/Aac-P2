@@ -20,3 +20,6 @@ class Register:
             return self.__name == other.__name
         else:
             return False
+
+    def __str__(self):
+        return str(self.__name) + ": " + str(self.__value)

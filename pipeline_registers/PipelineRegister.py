@@ -1,3 +1,4 @@
+import abc
 
 
 class PipelineRegister:
@@ -11,3 +12,7 @@ class PipelineRegister:
     @instruction.setter
     def instruction(self, i):
         self.__instruction = i
+
+    @abc.abstractmethod
+    def __str__(self):
+        pass

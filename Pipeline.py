@@ -5,12 +5,6 @@ from DataMemory import DataMemory
 from RegisterFile import RegisterFile
 
 
-def print_state_components(pc, rf, dm):
-    print(pc)
-    rf.print_register_file_state()
-    dm.print_data_memory_state()
-
-
 def main():
     # datapath initialization
     pc = ProgramCounter()
@@ -38,11 +32,26 @@ def main():
         else:
             id_ex = None
         if_id = im.instruction_fetch(pc, insert_bubble, if_id)
+        print_state(dm, ex_mem, id_ex, if_id, im, mem_wb, pc, rf)
         if not insert_bubble and pc.address <= im.get_last_instruction_address():
             pc.increment_pc()
-        print_state_components(pc, rf, dm)
         finished_pipeline = if_id == id_ex == ex_mem == mem_wb is None
         effective_jump = insert_bubble = False
+
+
+def print_state(dm, ex_mem, id_ex, if_id, im, mem_wb, pc, rf):
+    print("----------------")
+    print(pc)
+    print("----Pipeline----")
+    print(mem_wb)
+    print(ex_mem)
+    print(id_ex)
+    print(if_id)
+    print("----------------")
+    print(dm)
+    print(rf)
+    print(im.labels)
+    print("----------------")
 
 
 if __name__ == '__main__':
