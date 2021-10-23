@@ -1,7 +1,7 @@
 import os
 import re
 
-from RegisterFile import Register
+from Register import Register
 
 from instructions.InstructionI import InstructionI
 from instructions.InstructionJ import InstructionJ
