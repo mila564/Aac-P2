@@ -19,12 +19,17 @@ def main():
         rf.write_back(mem_wb)
         tuple_aux = alu.execution(id_ex, pc)  # tuple_aux = ex_mem, effective_jump
         mem_wb = dm.memory(ex_mem)
+        if mem_wb is not None:
+            instruction_mem = mem_wb.instruction
+        else:
+            instruction_mem = None
         if tuple_aux is not None:
             ex_mem = tuple_aux[0]
+            instruction_execution = ex_mem.instruction
             effective_jump = tuple_aux[1]
         else:
-            ex_mem = None
-        tuple_id_ex = rf.instruction_decode(if_id, ex_mem, mem_wb, effective_jump)
+            ex_mem = instruction_execution = None
+        tuple_id_ex = rf.instruction_decode(if_id, instruction_execution, instruction_mem, effective_jump)
         # tuple_id_ex = id_ex, insert_bubble
         if tuple_id_ex is not None:
             id_ex = tuple_id_ex[0]

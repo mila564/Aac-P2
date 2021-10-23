@@ -30,7 +30,7 @@ class RegisterFile:
             s += "[" + str(self.register_file[i]) + "]"
         return s
 
-    def instruction_decode(self, if_id, ex_mem, mem_wb, effective_jump):
+    def instruction_decode(self, if_id, instruction_execution, instruction_mem, effective_jump):
         if if_id is None:
             return None
         elif effective_jump:
@@ -65,34 +65,32 @@ class RegisterFile:
             # Forwarding handling
             if isinstance(instruction_decode, InstructionI) or isinstance(instruction_decode, InstructionR):
                 # Execution forwarding
-                if ex_mem is not None:
-                    if isinstance(ex_mem.instruction, InstructionR):
-                        if ex_mem.instruction.rd.__eq__(instruction_decode.rs):
-                            instruction_decode.rs.value = ex_mem.instruction.rd.value
-                        elif ex_mem.instruction.rd.__eq__(instruction_decode.rt):
-                            instruction_decode.rt.value = ex_mem.instruction.rd.value
-                    elif ex_mem.instruction.op_code in ["addi", "subi"]:  # Revise condition
-                        if ex_mem.instruction.rt.__eq__(instruction_decode.rs):
-                            instruction_decode.rs.value = ex_mem.instruction.rt.value
-                        elif ex_mem.instruction.rt.__eq__(instruction_decode.rt):
-                            instruction_decode.rt.value = ex_mem.instruction.rt.value
+                if instruction_execution is not None:
+                    if isinstance(instruction_execution, InstructionR):
+                        if instruction_execution.rd.__eq__(instruction_decode.rs):
+                            instruction_decode.rs.value = instruction_execution.rd.value
+                        elif instruction_execution.rd.__eq__(instruction_decode.rt):
+                            instruction_decode.rt.value = instruction_execution.rd.value
+                    elif instruction_execution.op_code in ["addi", "subi"]:  # Revise condition
+                        if instruction_execution.rt.__eq__(instruction_decode.rs):
+                            instruction_decode.rs.value = instruction_execution.rt.value
+                        elif instruction_execution.rt.__eq__(instruction_decode.rt):
+                            instruction_decode.rt.value = instruction_execution.rt.value
                     # Insert bubble
-                    if ex_mem.instruction.op_code == "lw" and (ex_mem.instruction.rt.__eq__(instruction_decode.rs)
-                                                               or ex_mem.instruction.rt.__eq__(instruction_decode.rt)):
+                    if instruction_execution.op_code == "lw" and (instruction_execution.rt.__eq__(instruction_decode.rs)
+                                                               or instruction_execution.rt.__eq__(instruction_decode.rt)):
                         return None, True  # Second parameter is boolean insert_bubble which
                         # indicates future phases of this instruction have to be erased
                 # Memory forwarding
-                if mem_wb is not None and mem_wb.instruction.op_code == "lw":
-                    if mem_wb.instruction.rt.__eq__(instruction_decode.rs):
-                        instruction_decode.rs.value = mem_wb.instruction.rt.value
-                    elif mem_wb.instruction.rt.__eq__(instruction_decode.rt):
-                        instruction_decode.rt.value = mem_wb.instruction.rt.value
+                if instruction_mem is not None and instruction_mem.op_code == "lw":
+                    if instruction_mem.rt.__eq__(instruction_decode.rs):
+                        instruction_decode.rs.value = instruction_mem.rt.value
+                    elif instruction_mem.rt.__eq__(instruction_decode.rt):
+                        instruction_decode.rt.value = instruction_mem.rt.value
             return IdExPipelineRegister(instruction_decode), False  # If we got here, then insert_bubble is false
 
     def write_back(self, mem_wb):
-        if mem_wb is None:
-            return None
-        else:
+        if mem_wb is not None:
             instruction_mem_wb = mem_wb.instruction
             operation_code = instruction_mem_wb.op_code
             index = 0
@@ -104,5 +102,3 @@ class RegisterFile:
                 rd = instruction_mem_wb.rd
                 index = self.positions[rd.name]
                 self.register_file[index].value = rd.value
-            else:  # Sw, beq or j instructions don't go through this phase
-                return None
