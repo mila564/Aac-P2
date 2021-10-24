@@ -36,7 +36,8 @@ def main():
             insert_bubble = tuple_id_ex[1]
         else:
             id_ex = None
-        if_id = im.instruction_fetch(pc, insert_bubble, if_id)
+        if not insert_bubble:
+            if_id = im.instruction_fetch(pc)
         print_state(dm, ex_mem, id_ex, if_id, im, mem_wb, pc, rf)
         if not insert_bubble and pc.address <= im.get_last_instruction_address():
             pc.increment_pc()
