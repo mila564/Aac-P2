@@ -6,7 +6,6 @@ from RegisterFile import RegisterFile
 
 
 def main():
-    # datapath initialization
     pc = ProgramCounter()
     im = InstructionMemory()
     rf = RegisterFile()
@@ -14,10 +13,9 @@ def main():
     dm = DataMemory()
     mem_wb = ex_mem = id_ex = if_id = None
     effective_jump = insert_bubble = finished_pipeline = False
-    # loop
     while not finished_pipeline:
         rf.write_back(mem_wb)
-        tuple_aux = alu.execution(id_ex, pc)  # tuple_aux = ex_mem, effective_jump
+        tuple_aux = alu.execution(id_ex, pc)
         mem_wb = dm.memory(ex_mem)
         if mem_wb is not None:
             instruction_mem = mem_wb.instruction
@@ -30,7 +28,6 @@ def main():
         else:
             ex_mem = instruction_execution = None
         tuple_id_ex = rf.instruction_decode(if_id, instruction_execution, instruction_mem, effective_jump)
-        # tuple_id_ex = id_ex, insert_bubble
         if tuple_id_ex is not None:
             id_ex = tuple_id_ex[0]
             insert_bubble = tuple_id_ex[1]
