@@ -18,11 +18,11 @@ class ArithmeticLogicUnit:
             return int(rs.value % rt.value)
 
     @staticmethod
-    def immediate_op(rs, offset, op, divider):  # Add divider parameter because of lw/sw instructions
+    def immediate_op(rs, offset, op, divider):
         if op == "+":
             return int(rs.value + offset / divider)
         else:
-            return int(rs.value - offset / divider)
+            return int(rs.value - offset)
 
     def add(self, rs, rt):
         return self.reg_op(rs, rt, "+")
@@ -79,6 +79,6 @@ class ArithmeticLogicUnit:
                     else:  # subi
                         instruction_ex.rt.value = self.subi(instruction_ex.rs, instruction_ex.offset)
             elif operation_code == "j":
-                pc.address = instruction_ex.target  # We change pc to fetch the instruction addressed by target
+                pc.address = instruction_ex.target
                 effective_jump = True
             return ExMemPipelineRegister(instruction_ex, value), effective_jump

@@ -20,9 +20,8 @@ class RegisterFile:
         for i in range(32):
             self.register_file.append(Register(register_names[i], 0))
             self.positions[register_names[i]] = i
-        # We suppose that la $t0, a where 4 is a's memory address
-        index_reg = self.positions["$t0"]  # index_reg = 8
-        self.register_file[index_reg].value = 4  # $t0 = 4
+        index_reg = self.positions["$t0"]
+        self.register_file[index_reg].value = 4
 
     def __str__(self):
         s = "Register file [Name: value] => "
@@ -34,13 +33,10 @@ class RegisterFile:
         if if_id is None:
             return None
         elif effective_jump:
-            return None  # We need to erase the instruction followed by j/beq
+            return None
         else:
             instruction_fetch = if_id.instruction
             if isinstance(instruction_fetch, InstructionI):
-                # sw/lw rt, offset(rs)
-                # addi/subi rt, rs, offset
-                # beq rt, rs, offset
                 index_rt = self.positions[instruction_fetch.rt.name]
                 index_rs = self.positions[instruction_fetch.rs.name]
                 rt = Register(self.register_file[index_rt].name,
@@ -49,7 +45,6 @@ class RegisterFile:
                               self.register_file[index_rs].value)
                 instruction_decode = InstructionI(instruction_fetch.op_code, rt, instruction_fetch.offset, rs)
             elif isinstance(instruction_fetch, InstructionR):
-                # mul rd, rs, rt
                 index_rd = self.positions[instruction_fetch.rd.name]
                 index_rt = self.positions[instruction_fetch.rt.name]
                 index_rs = self.positions[instruction_fetch.rs.name]
@@ -62,9 +57,7 @@ class RegisterFile:
                 instruction_decode = InstructionR(instruction_fetch.op_code, rd, rs, rt)
             elif isinstance(instruction_fetch, InstructionJ):
                 instruction_decode = InstructionJ(instruction_fetch.op_code, instruction_fetch.target)
-            # Forwarding handling
             if isinstance(instruction_decode, InstructionI) or isinstance(instruction_decode, InstructionR):
-                # Execution forwarding
                 if instruction_execution is not None:
                     if isinstance(instruction_execution, InstructionR):
                         if instruction_execution.rd.__eq__(instruction_decode.rs):
@@ -76,18 +69,15 @@ class RegisterFile:
                             instruction_decode.rs.value = instruction_execution.rt.value
                         elif instruction_execution.rt.__eq__(instruction_decode.rt):
                             instruction_decode.rt.value = instruction_execution.rt.value
-                    # Insert bubble
                     if instruction_execution.op_code == "lw" and (instruction_execution.rt.__eq__(instruction_decode.rs)
                                                                or instruction_execution.rt.__eq__(instruction_decode.rt)):
-                        return None, True  # Second parameter is boolean insert_bubble which
-                        # indicates future phases of this instruction have to be erased
-                # Memory forwarding
+                        return None, True
                 if instruction_mem is not None and instruction_mem.op_code == "lw":
                     if instruction_mem.rt.__eq__(instruction_decode.rs):
                         instruction_decode.rs.value = instruction_mem.rt.value
                     elif instruction_mem.rt.__eq__(instruction_decode.rt):
                         instruction_decode.rt.value = instruction_mem.rt.value
-            return IdExPipelineRegister(instruction_decode), False  # If we got here, then insert_bubble is false
+            return IdExPipelineRegister(instruction_decode), False
 
     def write_back(self, mem_wb):
         if mem_wb is not None:

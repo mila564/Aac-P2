@@ -8,8 +8,8 @@ class DataMemory:
         self.data = []
         for i in range(58):
             self.data.append(0)
-        self.data[4] = 3  # a = 3
-        self.data[5] = 2  # b = 2
+        self.data[4] = 3
+        self.data[5] = 2
 
     def data_memory_size(self):
         return len(self.data)
@@ -30,7 +30,6 @@ class DataMemory:
             if operation_code == "lw" or operation_code == "sw":
                 if operation_code == "lw":
                     instruction_mem_wb.rt.value = self.data[ex_mem.val % self.data_memory_size()]
-                else:  # sw
+                else:
                     self.data[ex_mem.val % self.data_memory_size()] = instruction_mem_wb.rt.value
-                    # module because of lw/sw result (if it's bigger that memory's capacity)
             return MemWbPipelineRegister(instruction_mem_wb)
